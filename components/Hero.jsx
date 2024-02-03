@@ -1,18 +1,19 @@
 'use client';
-import { useUser } from '@/hooks/useUser';
 import axios from 'axios';
 import Link from 'next/link';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { Button } from 'tamagui';
+import { useGlobalContext } from './AppContext';
 
 const Hero = () => {
-  const { currentUser, removeUser } = useUser();
+  const { user, setUser } = useGlobalContext();
+  console.log(user);
 
   const signOut = async () => {
     try {
       await axios.get('/api/auth/logout');
-      removeUser();
+      setUser(() => null);
       toast.success('Logged Out');
     } catch (error) {
       console.log(error);
@@ -22,13 +23,13 @@ const Hero = () => {
   return (
     <div className='h-screen p-2'>
       <nav className='h-12 px-2 flex items-center justify-end gap-2'>
-        <Link href={currentUser ? '/dashboard' : 'signin'}>
+        <Link href={user ? '/dashboard' : 'signin'}>
           <Button variant='outlined'>
-            {currentUser ? 'Dashboard' : 'Get Started'}
+            {user ? 'Dashboard' : 'Get Started'}
           </Button>
         </Link>
 
-        {currentUser && <Button onClick={signOut}>Signout</Button>}
+        {user && <Button onClick={signOut}>Signout</Button>}
       </nav>
 
       <div className='h-[calc(100%-3rem)] flex flex-col justify-center items-center'>

@@ -1,55 +1,17 @@
 'use client';
 import SinglePost from '@/components/SinglePost';
-import { useUser } from '@/hooks/useUser';
 import axios from 'axios';
 import { Button, Spinner } from 'tamagui';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { useGlobalContext } from '@/components/AppContext';
 
-const posts = [
-  {
-    userId: 1,
-    id: 1,
-    title: `sunt aut facere repellat provident occaecati excepturi optio reprehenderit`,
-    body: `quia et suscipit
-suscipit recusandae consequuntur expedita et cum
-reprehenderit molestiae ut ut quas totam
-nostrum rerum est autem sunt rem eveniet architecto`,
-  },
-  {
-    userId: 1,
-    id: 2,
-    title: `sunt aut facere repellat provident occaecati excepturi optio reprehenderit`,
-    body: `quia et suscipit
-suscipit recusandae consequuntur expedita et cum
-reprehenderit molestiae ut ut quas totam
-nostrum rerum est autem sunt rem eveniet architecto`,
-  },
-  {
-    userId: 1,
-    id: 7,
-    title: `sunt aut facere repellat provident occaecati excepturi optio reprehenderit`,
-    body: `quia et suscipit
-suscipit recusandae consequuntur expedita et cum
-reprehenderit molestiae ut ut quas totam
-nostrum rerum est autem sunt rem eveniet architecto`,
-  },
-  {
-    userId: 1,
-    id: 4,
-    title: `sunt aut facere repellat provident occaecati excepturi optio reprehenderit`,
-    body: `quia et suscipit
-suscipit recusandae consequuntur expedita et cum
-reprehenderit molestiae ut ut quas totam
-nostrum rerum est autem sunt rem eveniet architecto`,
-  },
-];
 const DashBoardPage = () => {
   const [page, setPage] = useState(0);
   const [posts, setPosts] = useState([]);
-  const { removeUser } = useUser();
+  const { setUser } = useGlobalContext();
   const router = useRouter();
 
   const { data, isLoading } = useQuery({
@@ -88,7 +50,7 @@ const DashBoardPage = () => {
   const signOut = async () => {
     try {
       await axios.get('/api/auth/logout');
-      removeUser();
+      setUser(() => null);
       toast.success('Logged Out');
       router.push('/');
     } catch (error) {

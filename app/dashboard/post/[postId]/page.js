@@ -16,7 +16,12 @@ const SinglePostPage = ({ params }) => {
     },
   });
 
-  if (isLoading) return <Spinner />;
+  if (isLoading)
+    return (
+      <div className='h-screen flex justify-center items-center'>
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className='p-4'>
