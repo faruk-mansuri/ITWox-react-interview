@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 const AuthForm = () => {
-  const [variant, setVariant] = useState('LOGIN');
+  const [variant, setVariant] = useState('REGISTER');
   const router = useRouter();
 
   const formSchema = z.object({
@@ -45,17 +45,28 @@ const AuthForm = () => {
     }
   };
   const onSubmit = async (values) => {
-    let action = variant === 'LOGIN' ? 'signin' : 'signup';
-    try {
-      const response = await axios.post(`/api/auth/${action}`, values);
-      toast.success('Logged in successfully.');
-      router.push('/dashboard');
-    } catch (error) {
-      console.log(error);
-      const errorMessage = error.response.data || 'Something went wrong.';
-      toast.error(errorMessage);
+    if (variant === 'REGISTER') {
+      try {
+        const response = await axios.post(`/api/auth/signup`, values);
+        toast.success('Account created successfully.');
+        setVariant('LOGIN');
+      } catch (error) {
+        const errorMessage = error.response.data || 'Something went wrong.';
+        toast.error(errorMessage);
+      }
+    } else {
+      try {
+        const response = await axios.post(`/api/auth/signin`, values);
+        toast.success('Login successfully.');
+        router.push('/dashboard');
+      } catch (error) {
+        const errorMessage = error.response.data || 'Something went wrong.';
+        toast.error(errorMessage);
+      }
     }
   };
+
+  console.log('variant', variant);
 
   return (
     <div className='bg-gary-100 h-screen flex flex-col justify-center items-center gap-4'>
